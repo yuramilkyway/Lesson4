@@ -1,12 +1,8 @@
 package ru.innopolis.main;
 
-import ru.innopolis.api.DemoMap;
+import java.util.*;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-
-public class HashDemoMap<K, V> implements DemoMap {
+public class HashDemoMap<K, V> implements Map {
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
     static final int DEFAULT_INITIAL_CAPACITY = 16;
     static final int MAXIMUM_CAPACITY = 1 << 30;
@@ -139,7 +135,7 @@ public class HashDemoMap<K, V> implements DemoMap {
      * @return результат выполнения
      */
     @Override
-    public boolean put(Object key, Object value) {
+    public Object put(Object key, Object value) {
         if (size + 1 >= threshold) {
             threshold *= 2;
             arrayDoubling();
@@ -250,7 +246,7 @@ public class HashDemoMap<K, V> implements DemoMap {
      * если для ключа не было сопоставления.
      */
     @Override
-    public boolean remove(Object key) {
+    public Object remove(Object key) {
         int index = hash(key);
         if (hashTable[index] == null) {
             return false;
@@ -271,6 +267,31 @@ public class HashDemoMap<K, V> implements DemoMap {
             }
         }
         return false;
+    }
+
+    @Override
+    public void putAll(Map m) {
+
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public Set keySet() {
+        return null;
+    }
+
+    @Override
+    public Collection values() {
+        return null;
+    }
+
+    @Override
+    public Set<Entry> entrySet() {
+        return null;
     }
 
     /**
@@ -295,6 +316,11 @@ public class HashDemoMap<K, V> implements DemoMap {
         return false;
     }
 
+    @Override
+    public boolean containsValue(Object value) {
+        return false;
+    }
+
     /**
      * Возвращает количество сопоставлений "ключ-значение" на этой карте.
      * Если карта содержит более элементов Integer.MAX_VALUE, возвращает Integer.MAX_VALUE.
@@ -304,6 +330,11 @@ public class HashDemoMap<K, V> implements DemoMap {
     @Override
     public int size() {
         return size;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
     private int hash(final Object key) {
