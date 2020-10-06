@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-public class HashDemoMap implements DemoMap {
+public class HashDemoMap<K, V> implements DemoMap {
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
     static final int DEFAULT_INITIAL_CAPACITY = 16;
     static final int MAXIMUM_CAPACITY = 1 << 30;
@@ -15,7 +15,7 @@ public class HashDemoMap implements DemoMap {
     private final float loadFactor;
     private int threshold;
     private int size = 0;
-    private Node[] hashTable;
+    private Node<K, V>[] hashTable;
 
     /**
      * Создает пустой {@code HashMap} с указанной начальной
@@ -76,19 +76,19 @@ public class HashDemoMap implements DemoMap {
     /**
      * Узел базового хеш-бункера, используемый для большинства записей.
      */
-    private class Node {
-        private final List<Node> nodes;
+    private class Node<K, V> {
+        private final List<Node<K, V>> nodes;
         private int hash;
-        private final Object key;
-        private Object value;
+        private final K key;
+        private V value;
 
-        private Node(Object key, Object value) {
+        private Node(K key, V value) {
             this.key = key;
             this.value = value;
             nodes = new LinkedList<>();
         }
 
-        private List<Node> getNodes() {
+        private List<Node<K, V>> getNodes() {
             return nodes;
         }
 
@@ -96,15 +96,15 @@ public class HashDemoMap implements DemoMap {
             return hashCode() % hashTable.length;
         }
 
-        private Object getKey() {
+        private K getKey() {
             return key;
         }
 
-        private Object getValue() {
+        private V getValue() {
             return value;
         }
 
-        private void setValue(Object value) {
+        private void setValue(V value) {
             this.value = value;
         }
         @Override
@@ -120,7 +120,7 @@ public class HashDemoMap implements DemoMap {
             }
 
             if (obj instanceof Node) {
-                Node node = (Node) obj;
+                Node<K, V> node = (Node) obj;
                 return (Objects.equals(key, node.getKey()) &&
                         Objects.equals(value, node.getValue()) ||
                         Objects.equals(hash, node.hashCode()));
@@ -139,23 +139,23 @@ public class HashDemoMap implements DemoMap {
      * @return результат выполнения
      */
     @Override
-    public Object put(Object key, Object value) {
+    public boolean put(Object key, Object value) {
         if (size + 1 >= threshold) {
             threshold *= 2;
             arrayDoubling();
         }
 
-        Node newNode = new Node(key, value);
+        Node<K, V> newNode = new Node(key, value);
         int index = newNode.hash();
 
         if (hashTable[index] == null) {
             return simpleAdd(index, newNode);
         }
 
-        List<Node> nodeList = hashTable[index].getNodes();
+        List<Node<K, V>> nodeList = hashTable[index].getNodes();
 
-        for (Node node : nodeList) {
-            if (keyExistButValueNew(node, newNode, value) ||
+        for (Node<K, V> node : nodeList) {
+            if (keyExistButValueNew(node, newNode, (V) value) ||
                     collisionProcessing(node, newNode, nodeList)) {
                 return true;
             }
@@ -169,17 +169,17 @@ public class HashDemoMap implements DemoMap {
      * @param newNode нода
      * @return результат выполнения
      */
-    private boolean simpleAdd(int index, Node newNode) {
-        hashTable[index] = new Node(null, null);
+    private boolean simpleAdd(int index, Node<K, V> newNode) {
+        hashTable[index] = new Node<>(null, null);
         hashTable[index].getNodes().add(newNode);
         size++;
         return true;
     }
 
     private boolean keyExistButValueNew(
-            final Node nodeFromList,
-            final Node newNode,
-            final Object value) {
+            final Node<K, V> nodeFromList,
+            final Node<K, V> newNode,
+            final V value) {
         if (newNode.getKey().equals(nodeFromList.getKey()) &&
                 !newNode.getValue().equals(nodeFromList.getValue())) {
             nodeFromList.setValue(value);
@@ -189,9 +189,9 @@ public class HashDemoMap implements DemoMap {
     }
 
     private boolean collisionProcessing(
-            final Node nodeFromList,
-            final Node newNode,
-            final List<Node> nodes) {
+            final Node<K, V> nodeFromList,
+            final Node<K, V> newNode,
+            final List<Node<K, V>> nodes) {
 
         if (newNode.hashCode() == nodeFromList.hashCode() &&
                 !Objects.equals(newNode.key, nodeFromList.key) &&
@@ -208,12 +208,12 @@ public class HashDemoMap implements DemoMap {
      * Создаем новый лист с размером в 2 раза больше предыдущего и перезаписываем ноды.
      */
     private void arrayDoubling() {
-        Node[] oldHashTable = hashTable;
+        Node<K, V>[] oldHashTable = hashTable;
         hashTable = new Node[oldHashTable.length * 2];
         size = 0;
-        for (Node node : oldHashTable) {
+        for (Node<K, V> node : oldHashTable) {
             if (node != null) {
-                for (Node n : node.getNodes()) {
+                for (Node<K, V> n : node.getNodes()) {
                     put(n.key, n.value);
                 }
             }
@@ -229,11 +229,11 @@ public class HashDemoMap implements DemoMap {
      * или null, если эта карта не содержит сопоставления для ключа
      */
     @Override
-    public Object get(Object key) {
+    public V get(Object key) {
         int index = hash(key);
         if (index < hashTable.length && hashTable[index] != null) {
-            List<Node> list = hashTable[index].getNodes();
-            for (Node node : list) {
+            List<Node<K, V>> list = hashTable[index].getNodes();
+            for (Node<K, V> node : list) {
                 if (key.equals(node.getKey())) {
                     return node.getValue();
                 }
@@ -250,7 +250,7 @@ public class HashDemoMap implements DemoMap {
      * если для ключа не было сопоставления.
      */
     @Override
-    public Object remove(Object key) {
+    public boolean remove(Object key) {
         int index = hash(key);
         if (hashTable[index] == null) {
             return false;
@@ -262,8 +262,8 @@ public class HashDemoMap implements DemoMap {
             return true;
         }
 
-        List<Node> nodeList = hashTable[index].getNodes();
-        for (Node node : nodeList) {
+        List<Node<K, V>> nodeList = hashTable[index].getNodes();
+        for (Node<K, V> node : nodeList) {
             if (key.equals(node.getKey())) {
                 nodeList.remove(node);
                 size--;
@@ -285,8 +285,8 @@ public class HashDemoMap implements DemoMap {
         if (index < hashTable.length &&
                 hashTable[index] != null) {
 
-            List<Node> list = hashTable[index].getNodes();
-            for (Node node : list) {
+            List<Node<K, V>> list = hashTable[index].getNodes();
+            for (Node<K, V> node : list) {
                 if (key.equals(node.getKey())) {
                     return true;
                 }

@@ -17,6 +17,5 @@ public class Main {
         hashDemoMap.remove("1");
         System.out.println(hashDemoMap.get("1"));
 
-        System.out.println("max int = " + (1 << 30));
     }
 }
