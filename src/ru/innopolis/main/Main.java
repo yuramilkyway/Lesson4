@@ -7,7 +7,7 @@ public class Main {
 
         HashDemoMap<Integer, String> hashDemoMap = new HashDemoMap(10);
         hashDemoMap.put(1, "cat");
-        hashDemoMap.put(24, "dog");
+        hashDemoMap.put(2, "dog");
         hashDemoMap.put(9, "yyy");
         hashDemoMap.put(5, "gggg");
 
@@ -19,6 +19,12 @@ public class Main {
         }
         System.out.println("=========================");
 
-        System.out.println(hashDemoMap.get(9));
+        HashDemoMap<Integer, String> h = new HashDemoMap<>();
+        h.put(11, "11");
+        h.put(22, "22");
+        h.put(33, "33");
+
+        hashDemoMap.putAll(h);
+        System.out.println(hashDemoMap.get(11));//не работает
     }
 }

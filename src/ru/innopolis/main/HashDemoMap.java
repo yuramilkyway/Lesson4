@@ -271,34 +271,22 @@ public class HashDemoMap<K, V> implements Map {
 
     @Override
     public void putAll(Map m) {
-       /* int s = m.size();
-        if (s > 0) {
-            if (hashTable == null) { // pre-size
-                float ft = ((float) s / loadFactor) + 1.0F;
-                int t = ((ft < (float) MAXIMUM_CAPACITY) ?
-                        (int) ft : MAXIMUM_CAPACITY);
-                while (t > threshold) {
-                    threshold = threshold * 2;
-                }
-            } else {
-                // Because of linked-list bucket constraints, we cannot
-                // expand all at once, but can reduce total resize
-                // effort by repeated doubling now vs later
-                while (s > threshold && hashTable.length < MAXIMUM_CAPACITY)
-                    resize();
-            }
+       Set<K> setM = keySet();
 
-            for (Entry<? extends K, ? extends V> e : m.entrySet()) {
-                K key = e.getKey();
-                V value = e.getValue();
-                putVal(hash(key), key, value, false, evict);
-            }
-        }*/
+        for (K k: setM) {
+            put(k, get(k));
+        }
     }
+
 
     @Override
     public void clear() {
-
+        Node<K,V>[] tab;
+        if ((tab = hashTable) != null && size > 0) {
+            size = 0;
+            for (int i = 0; i < tab.length; ++i)
+                tab[i] = null;
+        }
     }
 
     @Override
