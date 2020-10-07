@@ -271,7 +271,29 @@ public class HashDemoMap<K, V> implements Map {
 
     @Override
     public void putAll(Map m) {
+       /* int s = m.size();
+        if (s > 0) {
+            if (hashTable == null) { // pre-size
+                float ft = ((float) s / loadFactor) + 1.0F;
+                int t = ((ft < (float) MAXIMUM_CAPACITY) ?
+                        (int) ft : MAXIMUM_CAPACITY);
+                while (t > threshold) {
+                    threshold = threshold * 2;
+                }
+            } else {
+                // Because of linked-list bucket constraints, we cannot
+                // expand all at once, but can reduce total resize
+                // effort by repeated doubling now vs later
+                while (s > threshold && hashTable.length < MAXIMUM_CAPACITY)
+                    resize();
+            }
 
+            for (Entry<? extends K, ? extends V> e : m.entrySet()) {
+                K key = e.getKey();
+                V value = e.getValue();
+                putVal(hash(key), key, value, false, evict);
+            }
+        }*/
     }
 
     @Override
@@ -318,6 +340,21 @@ public class HashDemoMap<K, V> implements Map {
 
     @Override
     public boolean containsValue(Object value) {
+        Node<K, V>[] tab;
+        V v;
+        if ((tab = hashTable) != null && size > 0) {
+            for (Node<K, V> e : tab) {
+                try {
+                    for (Node<K, V> node : e.nodes) {
+                        if ((v = node.value) == value ||
+                                (value != null && value.equals(v)))
+                            return true;
+                    }
+                } catch (NullPointerException e1) {
+                    return false;
+                }
+            }
+        }
         return false;
     }
 
