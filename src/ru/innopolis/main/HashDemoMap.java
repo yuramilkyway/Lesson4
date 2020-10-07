@@ -302,8 +302,17 @@ public class HashDemoMap<K, V> implements Map {
     }
 
     @Override
-    public Set keySet() {
-        return null;
+    public Set<K> keySet() {
+        Set<K> set = new HashSet<>();
+        for (int i = 0; i < initialCapacity; i++) {
+            if (hashTable[i] != null) {
+                List<Node<K, V>> list = hashTable[i].getNodes();
+                for (Node<K, V> node : list) {
+                    set.add(node.getKey());
+                }
+            }
+        }
+        return set;
     }
 
     @Override
@@ -343,14 +352,14 @@ public class HashDemoMap<K, V> implements Map {
         Node<K, V>[] tab;
         V v;
         if ((tab = hashTable) != null && size > 0) {
-            for (Node<K, V> e : tab) {
+            for (Node<K, V> elemNode : tab) {
                 try {
-                    for (Node<K, V> node : e.nodes) {
+                    for (Node<K, V> node : elemNode.nodes) {
                         if ((v = node.value) == value ||
                                 (value != null && value.equals(v)))
                             return true;
                     }
-                } catch (NullPointerException e1) {
+                } catch (NullPointerException e) {
                     return false;
                 }
             }
@@ -371,7 +380,7 @@ public class HashDemoMap<K, V> implements Map {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     private int hash(final Object key) {
