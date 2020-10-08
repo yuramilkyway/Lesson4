@@ -1,5 +1,8 @@
 package ru.innopolis.main;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Main {
@@ -12,12 +15,12 @@ public class Main {
         hashDemoMap.put(5, "gggg");
 
         System.out.println(hashDemoMap.containsValue("do"));
-        System.out.println("=========================");
+        System.out.println("====================================================");
         Set<Integer> set = hashDemoMap.keySet();
         for (Integer s : set) {
             System.out.println(s);
         }
-        System.out.println("=========================");
+        System.out.println("====================================================");
 
         HashDemoMap<Integer, String> h = new HashDemoMap<>();
         h.put(11, "11");
@@ -25,6 +28,16 @@ public class Main {
         h.put(33, "33");
 
         hashDemoMap.putAll(h);
-        System.out.println(hashDemoMap.get(11));//не работает
+        Set<Map.Entry> entries = hashDemoMap.entrySet();
+        System.out.println(hashDemoMap.size() + " " + entries.size());
+        for (Map.Entry entry : entries)
+            System.out.println(entry);
+
+        System.out.println("====================================================");
+
+        Collection<String> values = hashDemoMap.values();
+        for (String v : values) {
+            System.out.println(v);
+        }
     }
 }

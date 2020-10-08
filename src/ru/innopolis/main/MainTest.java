@@ -5,24 +5,30 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainTest {
     private final HashDemoMap expected = new HashDemoMap();
     private final Map actual = new HashMap();
+    private final Map map = new HashMap();
 
 
     @Before
     public void setUp() {
         //Создаем тестовые данные
-        expected.put(1, "anime");
-        expected.put(5, "baba");
+        expected.put(1, "ana");
+        expected.put(5, "baa");
         expected.put(3, "yyy");
 
         //Создаем данные для сравнения
-        actual.put(1, "anime");
-        actual.put(5, "baba");
+        actual.put(1, "ana");
+        actual.put(5, "baa");
         actual.put(3, "yyy");
+
+        map.put(11, "11");
+        map.put(22, "22");
+        map.put(33, "33");
     }
 
     @Test
@@ -55,5 +61,39 @@ public class MainTest {
     public void checkingTheMethodContainsKey() {
         //Проверяем метод containsKey()
         Assert.assertEquals(actual.containsKey(1), expected.containsKey(1));
+    }
+
+    @Test
+    public void checkingTheMethodContainsValue() {
+        //Проверяем метод containsValue()
+        Assert.assertEquals(actual.containsValue("ana"), expected.containsValue("ana"));
+    }
+
+    @Test
+    public void checkingTheKeySet() {
+        //Проверяем метод keySet()
+        Assert.assertEquals(actual.keySet(), expected.keySet());
+    }
+
+    @Test
+    public void checkingTheEntrySet() {
+        //Проверяем метод entrySet()
+        Assert.assertEquals(actual.entrySet(), expected.entrySet());
+    }
+
+    @Test
+    public void checkingThePullAll() {
+        //Проверяем метод putAll()
+        actual.putAll(map);
+        expected.putAll(map);
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test
+    public void checkingTheClear() {
+        //Проверяем метод clear()
+        actual.clear();
+        expected.clear();
+        Assert.assertEquals(actual, expected);
     }
 }
