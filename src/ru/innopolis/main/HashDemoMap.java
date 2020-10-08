@@ -270,6 +270,10 @@ public class HashDemoMap<K, V> implements Map {
         return false;
     }
 
+    /**
+     * Копирует все сопоставления с указанной карты на эту карту.
+     * @param m Сопоставления, которые будут храниться на этой карте.
+     */
     @Override
     public void putAll(Map m) {
        Set<K> setM = m.keySet();
@@ -279,7 +283,9 @@ public class HashDemoMap<K, V> implements Map {
         }
     }
 
-
+    /**
+     * Очищает все значения с этой карты.
+     */
     @Override
     public void clear() {
         Node<K,V>[] tab;
@@ -290,6 +296,10 @@ public class HashDemoMap<K, V> implements Map {
         }
     }
 
+    /**
+     * Возвращает set представление ключей, содержащихся на этой карте.
+     * @return Set со всеми ключами этой карты.
+     */
     @Override
     public Set<K> keySet() {
         Set<K> set = new HashSet<>();
@@ -304,6 +314,10 @@ public class HashDemoMap<K, V> implements Map {
         return set;
     }
 
+    /**
+     * Возвращает список со всеми значениями, содержащихся на этой карте.
+     * @return Список значений.
+     */
     @Override
     public Collection<V> values() {
         List<V> list = new ArrayList<>();
@@ -318,6 +332,10 @@ public class HashDemoMap<K, V> implements Map {
         return list;
     }
 
+    /**
+     * Возвращает представление {@link Set} сопоставлений, содержащихся на этой карте.
+     * @return Set отображений, содержащихся на этой карте.
+     */
     @Override
     public Set<Entry> entrySet() {
         Set<Entry> set = new HashSet<>();
@@ -354,6 +372,11 @@ public class HashDemoMap<K, V> implements Map {
         return false;
     }
 
+    /**
+     * Возвращает true, если эта карта сопоставляет один или несколько ключей с значением value.
+     * @param value значение, наличие которого на этой карте должно быть проверено.
+     * @return true если эта карта сопоставляет один или несколько ключей с значением value.
+     */
     @Override
     public boolean containsValue(Object value) {
         Node<K, V>[] tab;
@@ -378,7 +401,7 @@ public class HashDemoMap<K, V> implements Map {
      * Возвращает количество сопоставлений "ключ-значение" на этой карте.
      * Если карта содержит более элементов Integer.MAX_VALUE, возвращает Integer.MAX_VALUE.
      *
-     * @return количество сопоставлений "ключ-значение" на этой карте
+     * @return количество сопоставлений "ключ-значение" на этой карте.
      */
     @Override
     public int size() {
