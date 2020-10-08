@@ -72,7 +72,7 @@ public class HashDemoMap<K, V> implements Map {
     /**
      * Узел базового хеш-бункера, используемый для большинства записей.
      */
-    private class Node<K, V> {
+    private class Node<K, V> implements Map.Entry<K, V> {
         private final List<Node<K, V>> nodes;
         private int hash;
         private final K key;
@@ -92,16 +92,21 @@ public class HashDemoMap<K, V> implements Map {
             return hashCode() % hashTable.length;
         }
 
-        private K getKey() {
+        @Override
+        public K getKey() {
             return key;
         }
 
-        private V getValue() {
+        @Override
+        public V getValue() {
             return value;
         }
 
-        private void setValue(V value) {
+        @Override
+        public V setValue(V value) {
+            V oldValue = this.value;
             this.value = value;
+            return oldValue;
         }
         @Override
         public int hashCode() {
@@ -122,6 +127,10 @@ public class HashDemoMap<K, V> implements Map {
                         Objects.equals(hash, node.hashCode()));
             }
             return false;
+        }
+        @Override
+        public String toString() {
+            return key + "=" + value;
         }
 
     }
@@ -151,12 +160,12 @@ public class HashDemoMap<K, V> implements Map {
         List<Node<K, V>> nodeList = hashTable[index].getNodes();
 
         for (Node<K, V> node : nodeList) {
-            if (keyExistButValueNew(node, newNode, (V) value) ||
-                    collisionProcessing(node, newNode, nodeList)) {
+            if (keyExistButValueNew(node, newNode, (V) value)) {
                 return true;
             }
         }
-        return false;
+        collisionProcessing(newNode, nodeList);
+        return true;
     }
 
     /**
@@ -184,20 +193,12 @@ public class HashDemoMap<K, V> implements Map {
         return false;
     }
 
-    private boolean collisionProcessing(
-            final Node<K, V> nodeFromList,
+    private void collisionProcessing(
             final Node<K, V> newNode,
             final List<Node<K, V>> nodes) {
 
-        if (newNode.hashCode() == nodeFromList.hashCode() &&
-                !Objects.equals(newNode.key, nodeFromList.key) &&
-                !Objects.equals(newNode.value, nodeFromList.value)) {
-
             nodes.add(newNode);
             size++;
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -271,10 +272,10 @@ public class HashDemoMap<K, V> implements Map {
 
     @Override
     public void putAll(Map m) {
-       Set<K> setM = keySet();
+       Set<K> setM = m.keySet();
 
         for (K k: setM) {
-            put(k, get(k));
+            put(k, m.get(k));
         }
     }
 
@@ -292,7 +293,7 @@ public class HashDemoMap<K, V> implements Map {
     @Override
     public Set<K> keySet() {
         Set<K> set = new HashSet<>();
-        for (int i = 0; i < initialCapacity; i++) {
+        for (int i = 0; i < hashTable.length; i++) {
             if (hashTable[i] != null) {
                 List<Node<K, V>> list = hashTable[i].getNodes();
                 for (Node<K, V> node : list) {
@@ -304,13 +305,31 @@ public class HashDemoMap<K, V> implements Map {
     }
 
     @Override
-    public Collection values() {
-        return null;
+    public Collection<V> values() {
+        List<V> list = new ArrayList<>();
+        for (int i = 0; i < hashTable.length; i++) {
+            if (hashTable[i] != null) {
+                List<Node<K, V>> list2 = hashTable[i].getNodes();
+                for (Node<K, V> node : list2) {
+                    list.add(node.getValue());
+                }
+            }
+        }
+        return list;
     }
 
     @Override
     public Set<Entry> entrySet() {
-        return null;
+        Set<Entry> set = new HashSet<>();
+        for (int i = 0; i < hashTable.length; i++) {
+            if (hashTable[i] != null) {
+                List<Node<K, V>> list = hashTable[i].getNodes();
+                for (Node<K, V> node : list) {
+                    set.add(node);
+                }
+            }
+        }
+        return set;
     }
 
     /**
